@@ -14,6 +14,22 @@ const [income, setIncome] = useState("");
 const [expense, setExpense] = useState("");
 
 const [goal, setGoal] = useState("");
+const monthlySavings =
+  Number(income || 0) - Number(expense || 0);
+
+const savingsRate =
+  income
+    ? Math.round((monthlySavings / Number(income)) * 100)
+    : 0;
+
+const healthScore =
+  Math.min(
+    100,
+    Math.max(
+      40,
+      60 + savingsRate / 2
+    )
+  );
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-6">
@@ -49,15 +65,105 @@ const [goal, setGoal] = useState("");
 
 {step===4 && <>Last question 🎯<br/><br/>What's your biggest financial goal?</>}
 
-{step>=5 && (
-<>
-🎉 Thanks {name}!<br/><br/>
+{step >= 5 && (
 
-Generating your AI Financial Twin...
+<div className="space-y-6">
 
-</>
+<h2 className="text-3xl font-bold text-purple-700">
+🌸 Welcome {name}
+</h2>
+
+<div className="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 p-8 text-center text-white">
+
+<p className="text-lg">
+Financial Health Score
+</p>
+
+<h1 className="mt-3 text-6xl font-extrabold">
+{healthScore}
+</h1>
+
+<p className="mt-2">
+Excellent Start 🚀
+</p>
+
+</div>
+
+<div className="grid gap-5 md:grid-cols-2">
+
+<div className="rounded-xl bg-white p-6 shadow">
+
+<h3 className="font-bold">
+💰 Monthly Savings
+</h3>
+
+<p className="mt-3 text-3xl font-bold text-green-600">
+₹{monthlySavings}
+</p>
+
+</div>
+
+<div className="rounded-xl bg-white p-6 shadow">
+
+<h3 className="font-bold">
+📈 Savings Rate
+</h3>
+
+<p className="mt-3 text-3xl font-bold text-purple-600">
+{savingsRate}%
+</p>
+
+</div>
+
+<div className="rounded-xl bg-white p-6 shadow">
+
+<h3 className="font-bold">
+🎯 Goal
+</h3>
+
+<p className="mt-3 text-xl">
+{goal}
+</p>
+
+</div>
+
+<div className="rounded-xl bg-white p-6 shadow">
+
+<h3 className="font-bold">
+🛡 Emergency Fund
+</h3>
+
+<p className="mt-3 text-xl">
+2 Months
+</p>
+
+</div>
+
+</div>
+
+<div className="rounded-2xl bg-purple-100 p-6">
+
+<h3 className="text-xl font-bold">
+🤖 Sakhi AI Recommendations
+</h3>
+
+<ul className="mt-4 space-y-2">
+
+<li>✅ Save ₹{Math.round(monthlySavings*0.4)} every month</li>
+
+<li>✅ Start SIP of ₹3000</li>
+
+<li>✅ Build an Emergency Fund</li>
+
+<li>✅ Track unnecessary expenses weekly</li>
+
+</ul>
+
+</div>
+
+</div>
+
 )}
-
 </p>
 
         {/* Input */}
