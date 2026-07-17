@@ -1,4 +1,5 @@
 import MeetSakhi from "./components/MeetSakhi";
+import Link from "next/link";
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
@@ -26,9 +27,11 @@ export default function Home() {
         </p>
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-          <button className="rounded-full bg-purple-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-purple-700">
-            Get Started
-          </button>
+          <Link href="/chat">
+  <button className="rounded-full bg-purple-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-purple-700">
+    Get Started
+  </button>
+</Link>
 
           <button className="rounded-full border border-purple-600 px-8 py-4 text-lg font-semibold text-purple-700 transition hover:bg-purple-100">
             Watch Demo
