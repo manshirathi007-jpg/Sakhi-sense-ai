@@ -30,6 +30,15 @@ const healthScore =
       60 + savingsRate / 2
     )
   );
+  function handleContinue() {
+  if (step === 0 && !name.trim()) return;
+  if (step === 1 && !age.trim()) return;
+  if (step === 2 && !income.trim()) return;
+  if (step === 3 && !expense.trim()) return;
+  if (step === 4 && !goal.trim()) return;
+
+  setStep(step + 1);
+}
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-6">
@@ -53,7 +62,7 @@ const healthScore =
         </div>
 
         {/* Chat Bubble */}
-        <p className="text-lg">
+        <div className="mt-8 text-lg">
 
 {step===0 && <>👋 Hi! I'm Sakhi.<br/><br/>What's your name?</>}
 
@@ -164,7 +173,7 @@ Excellent Start 🚀
 </div>
 
 )}
-</p>
+</div>
 
         {/* Input */}
         <input
@@ -201,7 +210,7 @@ Excellent Start 🚀
 />
 
 <button
-  onClick={() => setStep(step + 1)}
+  onClick={handleContinue}
   className="mt-6 w-full rounded-xl bg-purple-600 py-4 font-bold text-white hover:bg-purple-700"
 >
   Continue →
