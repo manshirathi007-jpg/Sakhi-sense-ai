@@ -11,9 +11,12 @@ export default function Home() {
           🌸 SakhiSense AI
         </h1>
 
-        <button className="rounded-full bg-purple-600 px-6 py-2 text-white transition hover:bg-purple-700">
-          Login
-        </button>
+        <Link
+  href="/login"
+  className="rounded-full bg-purple-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-purple-700"
+>
+  Login
+</Link>
       </nav>
 
       {/* Hero Section */}
