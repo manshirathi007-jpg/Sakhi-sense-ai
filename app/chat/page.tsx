@@ -1,17 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { downloadReport } from "@/lib/downloadReport";
+import { useRef, useState } from "react";
+import html2pdf from "html2pdf.js";
 
 export default function ChatPage() {
   // -----------------------------
-  // Steps
+  // Form State
   // -----------------------------
   const [step, setStep] = useState(0);
 
-  // -----------------------------
-  // User Data
-  // -----------------------------
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [income, setIncome] = useState("");
@@ -32,19 +29,65 @@ export default function ChatPage() {
   const [loadingAsk, setLoadingAsk] = useState(false);
 
   // -----------------------------
+  // What If Simulator
+  // -----------------------------
+  const [incomeBoost, setIncomeBoost] = useState(0);
+  const [expenseCut, setExpenseCut] = useState(0);
+
+  // -----------------------------
+  // PDF
+  // -----------------------------
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  // -----------------------------
   // Calculations
   // -----------------------------
   const monthlySavings =
     Number(income || 0) - Number(expense || 0);
 
   const savingsRate =
-    Number(income) > 0
-      ? Math.round((monthlySavings / Number(income)) * 100)
+    income
+      ? Math.round(
+          (monthlySavings / Number(income)) * 100
+        )
       : 0;
 
-  const healthScore = Math.max(
-    40,
-    Math.min(100, 60 + savingsRate / 2)
+  const healthScore = Math.min(
+    100,
+    Math.max(
+      40,
+      60 + savingsRate / 2
+    )
+  );
+
+  // -----------------------------
+  // What If Calculations
+  // -----------------------------
+  const simulatedIncome =
+    Number(income || 0) + incomeBoost;
+
+  const simulatedExpense =
+    Math.max(
+      0,
+      Number(expense || 0) - expenseCut
+    );
+
+  const simulatedSavings =
+    simulatedIncome - simulatedExpense;
+
+  const simulatedSavingsRate =
+    simulatedIncome
+      ? Math.round(
+          (simulatedSavings / simulatedIncome) * 100
+        )
+      : 0;
+
+  const simulatedHealthScore = Math.min(
+    100,
+    Math.max(
+      40,
+      60 + simulatedSavingsRate / 2
+    )
   );
 
   // -----------------------------
@@ -73,7 +116,7 @@ export default function ChatPage() {
       setAiAdvice(data.answer);
     } catch {
       setAiAdvice(
-        "Sorry, Sakhi couldn't generate your report."
+        "Sorry! AI couldn't generate advice."
       );
     }
 
@@ -83,7 +126,7 @@ export default function ChatPage() {
   // -----------------------------
   // Continue Button
   // -----------------------------
-  async function handleContinue() {
+  function handleContinue() {
     if (step === 0 && !name.trim()) return;
     if (step === 1 && !age.trim()) return;
     if (step === 2 && !income.trim()) return;
@@ -92,7 +135,7 @@ export default function ChatPage() {
 
     if (step === 4) {
       setStep(5);
-      await generateReport();
+      generateReport();
     } else {
       setStep(step + 1);
     }
@@ -106,62 +149,84 @@ export default function ChatPage() {
 
     setLoadingAsk(true);
 
-    try {
-      const res = await fetch("/api/ask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          age,
-          income,
-          expense,
-          goal,
-          question,
-        }),
-      });
+    const res = await fetch("/api/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        age,
+        income,
+        expense,
+        goal,
+        question,
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      setAskAnswer(data.answer);
-    } catch {
-      setAskAnswer(
-        "Sorry! Sakhi couldn't answer right now."
-      );
-    }
+    setAskAnswer(data.answer);
 
     setLoadingAsk(false);
   }
 
-  return (
+  // -----------------------------
+  // Download PDF
+  // -----------------------------
+  const downloadPDF = () => {
+    if (!reportRef.current) return;
+
+    html2pdf()
+      .set({
+        margin: 0.5,
+        filename: `SakhiSense_Report_${name}.pdf`,
+        image: {
+          type: "jpeg",
+          quality: 1,
+        },
+        html2canvas: {
+          scale: 2,
+        },
+        jsPDF: {
+          unit: "in",
+          format: "a4",
+          orientation: "portrait",
+        },
+      })
+      .from(reportRef.current)
+      .save();
+  };
+      return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-6">
-  <div className="w-full max-w-3xl rounded-3xl bg-white shadow-2xl p-10">
 
-    {/* Header */}
-    <div className="flex items-center gap-4">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-600 text-2xl">
-        🌸
-      </div>
+      <div className="w-full max-w-2xl rounded-3xl bg-white shadow-2xl p-10">
 
-      <div>
-        <h1 className="text-2xl font-bold">
-          Meet Sakhi
-        </h1>
+        {/* Header */}
 
-        <p className="text-gray-500">
-          Your AI Financial Twin
-        </p>
-      </div>
-    </div>
+        <div className="flex items-center gap-4">
 
-    {/* ---------------- ONBOARDING ---------------- */}
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-600 text-2xl">
+            🌸
+          </div>
 
-    {step < 5 && (
+          <div>
 
-      <div className="mt-10">
+            <h1 className="text-2xl font-bold">
+              Meet Sakhi
+            </h1>
 
-        <div className="rounded-2xl bg-purple-50 p-6 text-lg">
+            <p className="text-gray-500">
+              Your AI Financial Twin
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* Conversation */}
+
+        <div className="mt-8 text-lg">
 
           {step === 0 && (
             <>
@@ -195,7 +260,7 @@ export default function ChatPage() {
               Great!
               <br />
               <br />
-              What's your monthly expense?
+              How much do you spend every month?
             </>
           )}
 
@@ -208,245 +273,393 @@ export default function ChatPage() {
             </>
           )}
 
-        </div>
-
-        <input
-          className="mt-8 w-full rounded-xl border p-4"
-          value={
-            step === 0
-              ? name
-              : step === 1
-              ? age
-              : step === 2
-              ? income
-              : step === 3
-              ? expense
-              : goal
-          }
-          onChange={(e) => {
-            if (step === 0) setName(e.target.value);
-            else if (step === 1) setAge(e.target.value);
-            else if (step === 2) setIncome(e.target.value);
-            else if (step === 3) setExpense(e.target.value);
-            else setGoal(e.target.value);
-          }}
-          placeholder={
-            step === 0
-              ? "Enter your name"
-              : step === 1
-              ? "Enter your age"
-              : step === 2
-              ? "Monthly Income"
-              : step === 3
-              ? "Monthly Expense"
-              : "Your Financial Goal"
-          }
-        />
-
-        <button
-          onClick={handleContinue}
-          className="mt-6 w-full rounded-xl bg-purple-600 py-4 font-bold text-white hover:bg-purple-700"
-        >
-          Continue →
-        </button>
-
-      </div>
-
-    )}
-
-    {/* ---------------- REPORT ---------------- */}
-
-    {step >= 5 && (
-
-      <div className="mt-10 space-y-8">
-
-        <div className="text-center">
-
-          <h2 className="text-5xl font-extrabold text-purple-700">
-            🌸 Your Financial Twin
-          </h2>
-
-          <p className="mt-2 text-gray-500">
-            Personalized AI Report for <b>{name}</b>
-          </p>
-
-        </div>
-
-        <div className="rounded-3xl bg-gradient-to-r from-purple-600 to-pink-500 p-8 text-center text-white">
-
-          <p className="text-xl">
-            Financial Health Score
-          </p>
-
-          <h1 className="mt-4 text-7xl font-extrabold">
-            {healthScore}/100
-          </h1>
-
-          <div className="mt-6 h-3 rounded-full bg-white/30">
+          {step >= 5 && (
 
             <div
-              className="h-3 rounded-full bg-white"
-              style={{ width: `${healthScore}%` }}
-            />
+              ref={reportRef}
+              className="mt-8 space-y-6"
+            >
+                              {/* Report Title */}
 
-          </div>
+              <div className="text-center">
 
-          <p className="mt-5">
-            Keep improving every month 🚀
-          </p>
+                <h2 className="text-5xl font-extrabold text-purple-700">
+                  🌸 Your Financial Twin
+                </h2>
 
-        </div>
+                <p className="mt-3 text-gray-600">
+                  Personalized AI Financial Report for <b>{name}</b>
+                </p>
 
-        <div className="grid gap-5 md:grid-cols-2">
+              </div>
 
-          <div className="rounded-xl bg-white p-6 shadow">
+              {/* Health Score */}
 
-            <h3 className="font-bold">
-              💰 Monthly Savings
-            </h3>
+              <div className="rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 p-8 text-center text-white">
 
-            <p className="mt-3 text-3xl font-bold text-green-600">
-              ₹{monthlySavings}
-            </p>
+                <p className="text-xl font-semibold">
+                  ⭐ Financial Health Score
+                </p>
 
-          </div>
+                <h1 className="mt-4 text-7xl font-extrabold">
+                  {healthScore}/100
+                </h1>
 
-          <div className="rounded-xl bg-white p-6 shadow">
+                <div className="mt-6 h-3 rounded-full bg-white/30">
 
-            <h3 className="font-bold">
-              📈 Savings Rate
-            </h3>
+                  <div
+                    className="h-3 rounded-full bg-white"
+                    style={{ width: `${healthScore}%` }}
+                  />
 
-            <p className="mt-3 text-3xl font-bold text-purple-600">
-              {savingsRate}%
-            </p>
-
-          </div>
-
-          <div className="rounded-xl bg-white p-6 shadow">
-
-            <h3 className="font-bold">
-              🎯 Goal
-            </h3>
-
-            <p className="mt-3">
-              {goal}
-            </p>
-
-          </div>
-
-          <div className="rounded-xl bg-white p-6 shadow">
-
-            <h3 className="font-bold">
-              🛡 Emergency Fund
-            </h3>
-
-            <p className="mt-3">
-              2 Months
-            </p>
-
-          </div>
-
-        </div>
-                {/* AI Report */}
-
-        <div className="rounded-2xl bg-purple-100 p-6">
-
-          <h2 className="text-2xl font-bold text-purple-700">
-            🤖 Sakhi AI Financial Report
-          </h2>
-
-          <div className="mt-6">
-
-            {loadingAI ? (
-
-              <p className="animate-pulse font-semibold text-purple-700">
-                🤖 Sakhi is preparing your report...
-              </p>
-
-            ) : (
-
-              <>
-                <div className="whitespace-pre-wrap rounded-xl bg-white p-5 shadow">
-                  {aiAdvice}
                 </div>
 
+                <p className="mt-5 text-lg">
+                  Keep improving every month 🚀
+                </p>
+
+              </div>
+
+              {/* Financial Cards */}
+
+              <div className="grid gap-5 md:grid-cols-2">
+
+                <div className="rounded-xl bg-white p-6 shadow">
+
+                  <h3 className="font-bold">
+                    💰 Monthly Savings
+                  </h3>
+
+                  <p className="mt-3 text-3xl font-bold text-green-600">
+                    ₹{monthlySavings.toLocaleString()}
+                  </p>
+
+                </div>
+
+                <div className="rounded-xl bg-white p-6 shadow">
+
+                  <h3 className="font-bold">
+                    📈 Savings Rate
+                  </h3>
+
+                  <p className="mt-3 text-3xl font-bold text-purple-700">
+                    {savingsRate}%
+                  </p>
+
+                </div>
+
+                <div className="rounded-xl bg-white p-6 shadow">
+
+                  <h3 className="font-bold">
+                    🎯 Financial Goal
+                  </h3>
+
+                  <p className="mt-3 text-xl">
+                    {goal}
+                  </p>
+
+                </div>
+
+                <div className="rounded-xl bg-white p-6 shadow">
+
+                  <h3 className="font-bold">
+                    🛡 Emergency Fund
+                  </h3>
+
+                  <p className="mt-3 text-xl">
+                    {Math.ceil(Number(expense) * 3).toLocaleString()} Recommended
+                  </p>
+
+                </div>
+
+              </div>
+
+              {/* AI Report */}
+
+              <div className="rounded-2xl bg-purple-100 p-6">
+
+                <h2 className="text-2xl font-bold text-purple-700">
+                  🤖 Sakhi AI Report
+                </h2>
+
+                <div className="mt-6">
+
+                  {loadingAI ? (
+
+                    <p className="animate-pulse font-semibold text-purple-700">
+                      🤖 Sakhi is preparing your personalized financial report...
+                    </p>
+
+                  ) : (
+
+                    <>
+                      <div className="whitespace-pre-wrap rounded-xl bg-white p-5 shadow">
+                        {aiAdvice}
+                      </div>
+
+                      <button
+                        onClick={downloadPDF}
+                        className="mt-6 w-full rounded-xl bg-green-600 py-4 font-bold text-white hover:bg-green-700"
+                      >
+                        📄 Download Financial Report
+                      </button>
+                    </>
+
+                  )}
+
+                </div>
+
+              </div>
+                            {/* ========================= */}
+              {/* What If Simulator */}
+              {/* ========================= */}
+
+              <div className="rounded-2xl border bg-white p-6 shadow-lg">
+
+                <h2 className="text-2xl font-bold text-purple-700">
+                  💡 What If Simulator
+                </h2>
+
+                <p className="mt-2 text-gray-500">
+                  See how changing your income and expenses can improve your financial future.
+                </p>
+
+                <div className="mt-6 grid gap-6 md:grid-cols-2">
+
+                  <div>
+
+                    <label className="font-semibold">
+                      💵 Increase Monthly Income
+                    </label>
+
+                    <input
+                      type="range"
+                      min={0}
+                      max={50000}
+                      step={1000}
+                      value={incomeBoost}
+                      onChange={(e) =>
+                        setIncomeBoost(Number(e.target.value))
+                      }
+                      className="mt-3 w-full accent-purple-600"
+                    />
+
+                    <p className="mt-2 text-center font-bold text-purple-700">
+                      +₹{incomeBoost.toLocaleString()}
+                    </p>
+
+                  </div>
+
+                  <div>
+
+                    <label className="font-semibold">
+                      💸 Reduce Monthly Expenses
+                    </label>
+
+                    <input
+                      type="range"
+                      min={0}
+                      max={30000}
+                      step={500}
+                      value={expenseCut}
+                      onChange={(e) =>
+                        setExpenseCut(Number(e.target.value))
+                      }
+                      className="mt-3 w-full accent-pink-600"
+                    />
+
+                    <p className="mt-2 text-center font-bold text-pink-600">
+                      -₹{expenseCut.toLocaleString()}
+                    </p>
+
+                  </div>
+
+                </div>
+
+                <div className="mt-8 grid gap-5 md:grid-cols-2">
+
+                  <div className="rounded-xl bg-green-50 p-5">
+
+                    <h3 className="font-bold">
+                      💰 New Monthly Savings
+                    </h3>
+
+                    <p className="mt-3 text-3xl font-bold text-green-600">
+                      ₹{simulatedSavings.toLocaleString()}
+                    </p>
+
+                  </div>
+
+                  <div className="rounded-xl bg-purple-50 p-5">
+
+                    <h3 className="font-bold">
+                      ⭐ New Health Score
+                    </h3>
+
+                    <p className="mt-3 text-3xl font-bold text-purple-700">
+                      {simulatedHealthScore}/100
+                    </p>
+
+                  </div>
+
+                  <div className="rounded-xl bg-blue-50 p-5">
+
+                    <h3 className="font-bold">
+                      📈 Savings Rate
+                    </h3>
+
+                    <p className="mt-3 text-3xl font-bold text-blue-600">
+                      {simulatedSavingsRate}%
+                    </p>
+
+                  </div>
+
+                  <div className="rounded-xl bg-pink-50 p-5">
+
+                    <h3 className="font-bold">
+                      🚀 Improvement
+                    </h3>
+
+                    <p className="mt-3 text-3xl font-bold text-pink-600">
+                      +{simulatedHealthScore - healthScore}
+                    </p>
+
+                  </div>
+
+                </div>
+
+                <div className="mt-8 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 p-6 text-white">
+
+                  <h3 className="text-xl font-bold">
+                    🌸 Sakhi's Prediction
+                  </h3>
+
+                  <p className="mt-3">
+                    If you increase your income by{" "}
+                    <b>₹{incomeBoost.toLocaleString()}</b> and reduce your expenses by{" "}
+                    <b>₹{expenseCut.toLocaleString()}</b>, your Financial Health Score
+                    can improve from <b>{healthScore}</b> to{" "}
+                    <b>{simulatedHealthScore}</b>.
+                  </p>
+
+                </div>
+
+              </div>
+
+              {/* ========================= */}
+              {/* Ask Sakhi */}
+              {/* ========================= */}
+
+              <div className="rounded-2xl border bg-white p-6 shadow-lg">
+
+                <h2 className="text-2xl font-bold text-purple-700">
+                  💬 Ask Sakhi
+                </h2>
+
+                <p className="mt-2 text-gray-500">
+                  Ask anything about your finances.
+                </p>
+
+                <input
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  placeholder="Example: Can I buy an iPhone?"
+                  className="mt-5 w-full rounded-xl border p-4"
+                />
+
                 <button
-  onClick={downloadReport}
-  className="mt-6 w-full rounded-xl bg-green-600 py-4 font-bold text-white hover:bg-green-700"
->
-  📄 Download Report
-</button>
+                  onClick={askSakhi}
+                  className="mt-4 w-full rounded-xl bg-purple-600 py-4 font-bold text-white hover:bg-purple-700"
+                >
+                  Ask Sakhi
+                </button>
 
-              </>
+                {(loadingAsk || askAnswer) && (
 
-            )}
+                  <div className="mt-6 rounded-xl bg-purple-50 p-5">
 
-          </div>
+                    <h3 className="font-bold text-purple-700">
+                      🌸 Sakhi's Answer
+                    </h3>
 
-        </div>
+                    <p className="mt-3 whitespace-pre-wrap">
+                      {loadingAsk
+                        ? "🤖 Sakhi is thinking..."
+                        : askAnswer}
+                    </p>
 
-        {/* Ask Sakhi */}
+                  </div>
 
-        <div className="rounded-2xl border bg-white p-6 shadow">
+                )}
 
-          <h2 className="text-2xl font-bold text-purple-700">
-            💬 Ask Sakhi
-          </h2>
-
-          <p className="mt-2 text-gray-500">
-            Ask anything about your finances.
-          </p>
-
-          <input
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Example: Can I buy an iPhone?"
-            className="mt-5 w-full rounded-xl border p-4"
-          />
-
-          <button
-            onClick={askSakhi}
-            className="mt-4 w-full rounded-xl bg-purple-600 py-4 font-bold text-white hover:bg-purple-700"
-          >
-            Ask Sakhi
-          </button>
-
-          {(loadingAsk || askAnswer) && (
-
-            <div className="mt-6 rounded-xl bg-purple-50 p-5">
-
-              <h3 className="font-bold text-purple-700">
-                🌸 Sakhi's Answer
-              </h3>
-
-              <p className="mt-3 whitespace-pre-wrap">
-
-                {loadingAsk
-                  ? "🤖 Sakhi is thinking..."
-                  : askAnswer}
-
-              </p>
-
-            </div>
-
+              </div>
+                          </div>
           )}
 
         </div>
 
-      </div>
+        {/* Input Section */}
 
-    )}
+        {step < 5 && (
+
+          <div className="mt-8">
+
+            <input
+              value={
+                step === 0
+                  ? name
+                  : step === 1
+                  ? age
+                  : step === 2
+                  ? income
+                  : step === 3
+                  ? expense
+                  : goal
+              }
+              onChange={(e) => {
+                if (step === 0) setName(e.target.value);
+                else if (step === 1) setAge(e.target.value);
+                else if (step === 2) setIncome(e.target.value);
+                else if (step === 3) setExpense(e.target.value);
+                else setGoal(e.target.value);
+              }}
+              placeholder={
+                step === 0
+                  ? "Enter your name..."
+                  : step === 1
+                  ? "Enter your age..."
+                  : step === 2
+                  ? "Enter monthly income..."
+                  : step === 3
+                  ? "Enter monthly expenses..."
+                  : "Enter your financial goal..."
+              }
+              className="w-full rounded-xl border p-4"
+            />
+
+            <button
+              onClick={handleContinue}
+              className="mt-6 w-full rounded-xl bg-purple-600 py-4 font-bold text-white transition hover:bg-purple-700"
+            >
+              Continue →
+            </button>
+
+          </div>
+
+        )}
+
+        {/* Footer */}
+
         <div className="mt-10 text-center">
 
-      <p className="text-sm text-gray-500">
-        Generated by 🌸 SakhiSense AI
-      </p>
+          <p className="text-sm text-gray-500">
+            Generated by 🌸 SakhiSense AI
+          </p>
 
-    </div>
+        </div>
 
-  </div>
+      </div>
 
-</main>
+    </main>
   );
 }
