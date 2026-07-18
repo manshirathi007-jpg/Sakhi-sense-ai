@@ -38,6 +38,11 @@ export default function ChatPage() {
   // PDF
   // -----------------------------
   const reportRef = useRef<HTMLDivElement>(null);
+  const [scamText, setScamText] = useState("");
+
+const [scamResult, setScamResult] = useState("");
+
+const [loadingScam, setLoadingScam] = useState(false);
 
   // -----------------------------
   // Calculations
@@ -59,6 +64,16 @@ export default function ChatPage() {
       60 + savingsRate / 2
     )
   );
+  const badge =
+  healthScore >= 90
+    ? "🏆 Future Millionaire"
+    : healthScore >= 80
+    ? "🥇 Wealth Builder"
+    : healthScore >= 70
+    ? "🥈 Smart Saver"
+    : healthScore >= 60
+    ? "🥉 Budget Learner"
+    : "🌱 Beginner Saver";
 
   // -----------------------------
   // What If Calculations
@@ -170,6 +185,28 @@ export default function ChatPage() {
 
     setLoadingAsk(false);
   }
+
+  async function detectScam() {
+  if (!scamText.trim()) return;
+
+  setLoadingScam(true);
+
+  const res = await fetch("/api/scam", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: scamText,
+    }),
+  });
+
+  const data = await res.json();
+
+  setScamResult(data.answer);
+
+  setLoadingScam(false);
+}
 
   // -----------------------------
   // Download PDF
@@ -319,6 +356,18 @@ export default function ChatPage() {
                 </p>
 
               </div>
+
+              <div className="rounded-2xl bg-yellow-100 p-6 text-center shadow">
+
+  <h3 className="text-xl font-bold">
+    🏅 Your Financial Badge
+  </h3>
+
+  <p className="mt-4 text-3xl font-bold">
+    {badge}
+  </p>
+
+</div>
 
               {/* Financial Cards */}
 
@@ -593,6 +642,50 @@ export default function ChatPage() {
                 )}
 
               </div>
+              <div className="rounded-2xl border bg-white p-6 shadow-lg mt-8">
+
+  <h2 className="text-2xl font-bold text-red-600">
+    🚨 AI Scam Detector
+  </h2>
+
+  <p className="mt-2 text-gray-500">
+    Paste any suspicious SMS, WhatsApp message, email or website text.
+  </p>
+
+  <textarea
+    rows={6}
+    value={scamText}
+    onChange={(e)=>setScamText(e.target.value)}
+    className="mt-5 w-full rounded-xl border p-4"
+    placeholder="Paste suspicious message here..."
+  />
+
+  <button
+    onClick={detectScam}
+    className="mt-5 w-full rounded-xl bg-red-600 py-4 font-bold text-white hover:bg-red-700"
+  >
+    Analyze Scam
+  </button>
+
+  {(loadingScam || scamResult) && (
+
+    <div className="mt-6 rounded-xl bg-red-50 p-5">
+
+      <h3 className="font-bold text-red-600">
+        🛡 Sakhi Security Report
+      </h3>
+
+      <p className="mt-3 whitespace-pre-wrap">
+        {loadingScam
+          ? "Analyzing..."
+          : scamResult}
+      </p>
+
+    </div>
+
+  )}
+
+</div>
                           </div>
           )}
 
