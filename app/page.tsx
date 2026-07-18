@@ -1,3 +1,5 @@
+
+"use client";
 import MeetSakhi from "./components/MeetSakhi";
 import Link from "next/link";
 export default function Home() {
@@ -33,9 +35,18 @@ export default function Home() {
   </button>
 </Link>
 
-          <button className="rounded-full border border-purple-600 px-8 py-4 text-lg font-semibold text-purple-700 transition hover:bg-purple-100">
-            Watch Demo
-          </button>
+          <button
+  onClick={() =>
+    document
+      .getElementById("demo")
+      ?.scrollIntoView({
+        behavior: "smooth",
+      })
+  }
+  className="rounded-full border border-purple-600 px-8 py-4 hover:bg-purple-50 transition"
+>
+  Watch Demo
+</button>
         </div>
 
         {/* Stats */}
@@ -58,10 +69,11 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="mx-auto mt-28 max-w-7xl px-8 pb-24">
-        <h2 className="text-center text-4xl font-bold text-gray-900">
-          Powerful AI Features
-        </h2>
+      
+        <section id="demo" className="py-24">
+  <h2 className="text-5xl font-bold">
+    Powerful AI Features
+  </h2>
 
         <p className="mt-4 text-center text-lg text-gray-600">
           Everything a first-time earner needs to become financially confident.
