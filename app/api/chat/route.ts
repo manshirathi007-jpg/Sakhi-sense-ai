@@ -98,6 +98,8 @@ Do not add any extra text before or after it.
       model: "openrouter/free",
       input: prompt,
     });
+    
+
 
     return NextResponse.json({
       answer: response.output_text,
