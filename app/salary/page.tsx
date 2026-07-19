@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Tesseract from "tesseract.js";
-import html2pdf from "html2pdf.js";
+
 
 export default function SalaryPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -46,29 +46,31 @@ export default function SalaryPage() {
     setLoading(false);
   }
 
-  const downloadSalaryPDF = () => {
-    if (!reportRef.current) return;
+  const downloadSalaryPDF = async () => {
+  if (!reportRef.current) return;
 
-    html2pdf()
-      .set({
-        margin: 0.5,
-        filename: "Salary_Analysis_Report.pdf",
-        image: {
-          type: "jpeg",
-          quality: 1,
-        },
-        html2canvas: {
-          scale: 2,
-        },
-        jsPDF: {
-          unit: "in",
-          format: "a4",
-          orientation: "portrait",
-        },
-      })
-      .from(reportRef.current)
-      .save();
-  };
+  const html2pdf = (await import("html2pdf.js")).default;
+
+  html2pdf()
+    .set({
+      margin: 0.5,
+      filename: "Salary_Analysis_Report.pdf",
+      image: {
+        type: "jpeg",
+        quality: 1,
+      },
+      html2canvas: {
+        scale: 2,
+      },
+      jsPDF: {
+        unit: "in",
+        format: "a4",
+        orientation: "portrait",
+      },
+    })
+    .from(reportRef.current)
+    .save();
+};
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-8">
@@ -173,10 +175,10 @@ export default function SalaryPage() {
                 </div>
 
                 <button
-  className="mt-8 w-full rounded-xl bg-purple-600 py-4 font-bold text-white"
   onClick={() => window.print()}
+  className="mt-8 w-full rounded-xl bg-purple-600 py-4 font-bold text-white hover:bg-purple-700"
 >
-  🖨️ Print / Save as PDF
+  🖨️ Save / Print Report
 </button>
 
               </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import html2pdf from "html2pdf.js";
+
 
 export default function ChatPage() {
   // -----------------------------
@@ -447,11 +447,11 @@ const [loadingScam, setLoadingScam] = useState(false);
                       </div>
 
                       <button
-                        onClick={downloadPDF}
-                        className="mt-6 w-full rounded-xl bg-green-600 py-4 font-bold text-white hover:bg-green-700"
-                      >
-                        📄 Download Financial Report
-                      </button>
+  onClick={() => window.print()}
+  className="no-print mt-8 w-full rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 py-4 text-lg font-bold text-white shadow-lg transition hover:scale-105"
+>
+  📥 Download Financial Report
+</button>
                     </>
 
                   )}
