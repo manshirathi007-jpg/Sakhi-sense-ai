@@ -1,36 +1,152 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🌸 SakhiSense AI
 
-## Getting Started
+Your AI Financial Twin for Smarter Money Decisions
 
-First, run the development server:
+SakhiSense AI is an AI-powered financial assistant designed to help first-time earners understand their salary, manage finances, detect scams, and make better financial decisions through personalized insights.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🚀 Problem Statement
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Young professionals and first-time earners often struggle with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Understanding salary slips
+Managing monthly expenses
+Detecting financial scams
+Planning savings and investments
+Making informed financial decisions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Most existing financial tools are complex, generic, and not beginner-friendly.
 
-## Learn More
+💡 Our Solution
 
-To learn more about Next.js, take a look at the following resources:
+SakhiSense AI acts as an AI Financial Twin, providing personalized financial guidance using AI, OCR, and intelligent financial analysis.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Users receive instant recommendations, financial health scores, scam detection, salary insights, and personalized planning—all in one platform.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+✨ Features
+🤖 AI Financial Twin
+Personalized financial profile
+Financial Health Score
+AI-generated recommendations
+Goal-based planning
+📊 What-If Simulator
 
-## Deploy on Vercel
+Interactive sliders allow users to simulate:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Increased monthly income
+Reduced monthly expenses
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Instantly see:
+
+Updated savings
+Improved Financial Health Score
+New Savings Rate
+💬 Ask Sakhi (AI Chat)
+
+Users can ask financial questions like:
+
+How much should I save?
+Is my spending healthy?
+Investment suggestions
+Budget planning
+
+Powered by AI.
+
+📄 Salary Slip Analyzer
+
+Upload a salary slip image.
+
+Features:
+
+OCR using Tesseract.js
+AI-powered salary analysis
+Gross vs Net Salary
+Deduction analysis
+PF & Tax insights
+Savings recommendations
+Salary Health Score
+Download / Print report
+🛡 Scam Detector
+
+Paste suspicious:
+
+SMS
+WhatsApp messages
+Emails
+Investment offers
+
+AI analyzes:
+
+Scam probability
+Warning signs
+Safety recommendations
+🎯 Goal Planner
+
+Plan financial goals such as:
+
+Buying a car
+Buying a home
+Emergency fund
+Higher education
+Starting a business
+
+Receive personalized AI suggestions.
+
+🏗 Tech Stack
+Frontend
+Next.js 16
+React
+TypeScript
+Tailwind CSS
+AI
+Google Gemini API
+OCR
+Tesseract.js
+Styling
+Tailwind CSS
+Responsive Design
+Deployment
+Vercel
+
+🎥 Demo Flow
+Landing Page
+Login
+Meet Sakhi
+Financial Twin
+AI Report
+What-If Simulator
+Ask Sakhi
+Salary Slip Analyzer
+Scam Detector
+Download Report
+
+📈 Future Scope
+Bank Account Integration
+UPI Expense Tracking
+Investment Portfolio Analysis
+Voice Assistant
+Multi-language Support
+Credit Score Prediction
+Financial Goal Notifications
+AI Budget Forecasting
+
+👩‍💻 Team
+Team Name: Debugging Mind 
+Members
+Manshi Rathi
+
+(Add teammate names if applicable)
+❤️ Why SakhiSense AI?
+
+Unlike traditional finance apps, SakhiSense AI combines:
+
+AI Financial Coaching
+Salary Analysis
+Scam Detection
+Financial Planning
+Personalized Insights
+
+into one intelligent assistant built specifically for first-time earners.
+
+📜 License
+
+This project was developed for a Hackathon.
