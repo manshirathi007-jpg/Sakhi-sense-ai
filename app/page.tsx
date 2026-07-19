@@ -1,65 +1,209 @@
-import Image from "next/image";
+"use client";
+
+import MeetSakhi from "./components/MeetSakhi";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+
+      {/* Navbar */}
+      <nav className="flex items-center justify-between px-8 py-6 md:px-16">
+
+        <h1 className="text-3xl font-bold text-purple-700">
+          🌸 SakhiSense AI
+        </h1>
+
+        <div className="flex items-center gap-4">
+
+          <Link
+            href="/salary"
+            className="rounded-full border border-purple-600 px-5 py-2 font-semibold text-purple-700 hover:bg-purple-600 hover:text-white transition"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Salary Analyzer
+          </Link>
+
+          <Link
+            href="/login"
+            className="rounded-full bg-purple-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-purple-700"
           >
-            Documentation
-          </a>
+            Login
+          </Link>
+
         </div>
-      </main>
-    </div>
+
+      </nav>
+
+      {/* Hero Section */}
+
+      <section className="mx-auto mt-16 flex max-w-6xl flex-col items-center px-6 text-center">
+
+        <h1 className="text-5xl font-extrabold leading-tight text-gray-900 md:text-7xl">
+          Your AI Financial Twin
+        </h1>
+
+        <p className="mt-6 max-w-3xl text-xl leading-8 text-gray-600">
+          SakhiSense AI helps first-time earners make smarter financial
+          decisions through personalized budgeting, salary analysis, scam
+          detection and AI-powered financial guidance.
+        </p>
+
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+
+          <Link href="/chat">
+            <button className="rounded-full bg-purple-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-purple-700">
+              Get Started
+            </button>
+          </Link>
+
+          <button
+            onClick={() =>
+              document
+                .getElementById("features")
+                ?.scrollIntoView({
+                  behavior: "smooth",
+                })
+            }
+            className="rounded-full border border-purple-600 px-8 py-4 hover:bg-purple-50 transition"
+          >
+            Watch Demo
+          </button>
+
+        </div>
+
+        {/* Stats */}
+
+        <div className="mt-20 grid w-full max-w-4xl grid-cols-1 gap-8 md:grid-cols-3">
+
+          <div>
+            <h2 className="text-4xl font-bold text-purple-700">
+              10K+
+            </h2>
+
+            <p className="mt-2 text-gray-600">
+              Future Users
+            </p>
+          </div>
+
+          <div>
+            <h2 className="text-4xl font-bold text-purple-700">
+              ₹12Cr+
+            </h2>
+
+            <p className="mt-2 text-gray-600">
+              Financial Goals Planned
+            </p>
+          </div>
+
+          <div>
+            <h2 className="text-4xl font-bold text-purple-700">
+              95%
+            </h2>
+
+            <p className="mt-2 text-gray-600">
+              AI Recommendation Accuracy
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* Features */}
+
+      <section id="features" className="py-24">
+
+        <h2 className="text-center text-5xl font-bold">
+          Powerful AI Features
+        </h2>
+
+        <p className="mt-4 text-center text-lg text-gray-600">
+          Everything a first-time earner needs to become financially confident.
+        </p>
+
+        <div className="mx-auto mt-14 grid max-w-6xl gap-8 px-6 md:grid-cols-2 lg:grid-cols-4">
+
+          {/* Card 1 */}
+
+          <div className="rounded-3xl bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+            <div className="text-5xl">💰</div>
+
+            <h3 className="mt-5 text-2xl font-bold">
+              AI Financial Twin
+            </h3>
+
+            <p className="mt-4 text-gray-600">
+              Get personalized financial insights based on your salary,
+              expenses, goals and savings habits.
+            </p>
+
+          </div>
+
+          {/* Card 2 */}
+
+          <div className="rounded-3xl bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+            <div className="text-5xl">📄</div>
+
+            <h3 className="mt-5 text-2xl font-bold">
+              Salary Slip Analyzer
+            </h3>
+
+            <p className="mt-4 text-gray-600">
+              Upload your salary slip image and instantly understand deductions,
+              taxes and your actual take-home income.
+            </p>
+
+            <Link
+              href="/salary"
+              className="mt-6 inline-block rounded-xl bg-purple-600 px-6 py-3 font-bold text-white hover:bg-purple-700"
+            >
+              Try Now →
+            </Link>
+
+          </div>
+
+          {/* Card 3 */}
+
+          <div className="rounded-3xl bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+            <div className="text-5xl">🛡️</div>
+
+            <h3 className="mt-5 text-2xl font-bold">
+              Scam Shield
+            </h3>
+
+            <p className="mt-4 text-gray-600">
+              Detect fake investment schemes, phishing messages and suspicious
+              financial links using AI.
+            </p>
+
+          </div>
+
+          {/* Card 4 */}
+
+          <div className="rounded-3xl bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+            <div className="text-5xl">🎯</div>
+
+            <h3 className="mt-5 text-2xl font-bold">
+              Goal Planner
+            </h3>
+
+            <p className="mt-4 text-gray-600">
+              Set your dream goals and receive an AI-powered roadmap to achieve
+              them faster.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <MeetSakhi />
+
+    </main>
   );
 }
