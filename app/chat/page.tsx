@@ -212,28 +212,8 @@ const [loadingScam, setLoadingScam] = useState(false);
   // Download PDF
   // -----------------------------
   const downloadPDF = () => {
-    if (!reportRef.current) return;
-
-    html2pdf()
-      .set({
-        margin: 0.5,
-        filename: `SakhiSense_Report_${name}.pdf`,
-        image: {
-          type: "jpeg",
-          quality: 1,
-        },
-        html2canvas: {
-          scale: 2,
-        },
-        jsPDF: {
-          unit: "in",
-          format: "a4",
-          orientation: "portrait",
-        },
-      })
-      .from(reportRef.current)
-      .save();
-  };
+  window.print();
+};
       return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-6">
 
