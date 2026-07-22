@@ -134,7 +134,6 @@ Team Name: Debugging Mind
 Members
 Manshi Rathi
 
-(Add teammate names if applicable)
 ❤️ Why SakhiSense AI?
 
 Unlike traditional finance apps, SakhiSense AI combines:
