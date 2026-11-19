@@ -130,7 +130,7 @@ Financial Goal Notifications
 AI Budget Forecasting
 
 👩‍💻 Team
-Team Name: Debugging Mind 
+Team Name: Plot Twist
 Members
 Manshi Rathi
 
